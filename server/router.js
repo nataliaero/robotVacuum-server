@@ -3,7 +3,7 @@ const router = express.Router();
 const controller = require('./controller');
 
 router.get('/robots', controller.getRobots);
-router.get('/robots?q=:searchVal', controller.searchRobots);
+router.get('/search/:searchVal', controller.searchRobots);
 router.get('/robot/:id', controller.findOneRobot);
 router.get('/robots/top10', controller.findTop10);
 
