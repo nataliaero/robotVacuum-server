@@ -8,14 +8,26 @@ exports.getRobots = async (req, res) => {
     res.json(robots);
   }
   catch (err) {
-    console.log('GET error at getAll'); //eslint-disable-line no-console
+    console.log('GET error at getAll: ', err); //eslint-disable-line no-console
     res.status(500).send({ error: 'Server error' });
   }
 };
 
 // method to search for a robot vaccum based on the name
-exports.searchRobots = (req, res) => {
+exports.searchRobots = async (req, res) => {
+  try {
+    const allRobots = await Robot.find({});
+    const selectedRobots = allRobots.filter(robot => {
+      const name = robot.name.toLowerCase();
+      return name.includes(req.params.searchVal.toLowerCase());
+    });
+    res.status = 200;
+    res.json(selectedRobots);
 
+  }  catch (err) {
+    console.log('GET error at searchRobots: ', err); //eslint-disable-line no-console
+    res.status(500).send({ error: 'Server error' });
+  }
 };
 
 
@@ -28,7 +40,7 @@ exports.postRobot = async (req, res) => {
     res.json(res.body);
   }
   catch (err) {
-    console.log('POST error at postOne'); //eslint-disable-line no-console
+    console.log('POST error at postOne: ', err); //eslint-disable-line no-console
     res.status(500).send({ error: 'Client error. Check request body.' });
   }
 
@@ -41,7 +53,7 @@ exports.updateRobot = async (req, res) => {
     res.status = 200;
     res.json(req.body);
   } catch (err) {
-    console.log('UPDATE error at updateRobot'); //eslint-disable-line no-console
+    console.log('UPDATE error at updateRobot: ', err); //eslint-disable-line no-console
     res.status(500).send({ error: 'Client error. Check request body.' });
   }
 };
@@ -53,7 +65,7 @@ exports.deleteRobot = async (req, res) => {
     res.status = 200;
     res.json({id: req.params.id});
   } catch (err) {
-    console.log('DELETE error at deleteRobot'); //eslint-disable-line no-console
+    console.log('DELETE error at deleteRobot: ', err); //eslint-disable-line no-console
     res.status(500).send({ error: 'Server error. Delete Robot end-point.' });
   }
 };
