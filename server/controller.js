@@ -41,7 +41,7 @@ exports.postRobot = async (req, res) => {
   }
   catch (err) {
     console.log('POST error at postOne: ', err); //eslint-disable-line no-console
-    res.status(500).send({ error: 'Client error. Check request body.' });
+    res.status(400).send({ error: 'Client error. Check request body.' });
   }
 
 };
@@ -54,7 +54,7 @@ exports.updateRobot = async (req, res) => {
     res.json(req.body);
   } catch (err) {
     console.log('UPDATE error at updateRobot: ', err); //eslint-disable-line no-console
-    res.status(500).send({ error: 'Client error. Check request body.' });
+    res.status(400).send({ error: 'Client error. Check request body.' });
   }
 };
 
@@ -66,6 +66,30 @@ exports.deleteRobot = async (req, res) => {
     res.json({id: req.params.id});
   } catch (err) {
     console.log('DELETE error at deleteRobot: ', err); //eslint-disable-line no-console
-    res.status(500).send({ error: 'Server error. Delete Robot end-point.' });
+    res.status(500).send({ error: 'Server error at Delete Robot end-point.' });
+  }
+};
+
+// method to find one robot based on one id
+exports.findOneRobot = async (req, res) => {
+  try {
+    const robot = await Robot.findById(req.params.id);
+    res.status = 200;
+    res.json(robot);
+  } catch (err) {
+    console.log('GET error at findOneRobot: ', err); //eslint-disable-line no-console
+    res.status(500).send({ error: 'Server error at findOneRobot end-point' });
+  }
+};
+
+// method to find the top 10 robots
+exports.findTop10 = async (req, res) => {
+  try {
+    const robots = await Robot.find({top10: true});
+    res.status = 200;
+    res.json(robots);
+  } catch (err) {
+    console.log('GET error at findOneRobot: ', err); //eslint-disable-line no-console
+    res.status(500).send({ error: 'Server error at findTop10 end-point.' });
   }
 };

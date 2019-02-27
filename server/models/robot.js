@@ -58,6 +58,10 @@ const RobotSchema = new Schema ({
     type: String,
     required: true
   },
+  top10: {
+    type: Boolean,
+    default: false
+  },
   subtitle: {
     type: String,
     required: true
