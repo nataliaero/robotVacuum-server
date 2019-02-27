@@ -1,5 +1,6 @@
 const Robot = require('./models/robot');
 
+// method to get all robot vacuums
 exports.getRobots = async (req, res) => {
   try {
     const robots = await Robot.find();
@@ -12,12 +13,14 @@ exports.getRobots = async (req, res) => {
   }
 };
 
+// method to search for a robot vaccum based on the name
 exports.searchRobots = (req, res) => {
 
 };
 
-exports.postRobot = async (req, res) => {
 
+// method to post a new robot vacuum
+exports.postRobot = async (req, res) => {
   try {
     let robot = new Robot(req.body);
     res.body = await robot.save();
@@ -26,15 +29,31 @@ exports.postRobot = async (req, res) => {
   }
   catch (err) {
     console.log('POST error at postOne'); //eslint-disable-line no-console
-    res.status(500).send({ error: 'Client error' });
+    res.status(500).send({ error: 'Client error. Check request body.' });
   }
 
 };
 
-exports.updateRobot = (req, res) => {
-
+// method to edit a robot vacuum
+exports.updateRobot = async (req, res) => {
+  try {
+    await Robot.findOneAndUpdate({_id: req.params.id}, req.body);
+    res.status = 200;
+    res.json(req.body);
+  } catch (err) {
+    console.log('UPDATE error at updateRobot'); //eslint-disable-line no-console
+    res.status(500).send({ error: 'Client error. Check request body.' });
+  }
 };
 
-exports.deleteRobot = (req, res) => {
-
+// method to delete a robot vacuum
+exports.deleteRobot = async (req, res) => {
+  try {
+    await Robot.deleteOne({_id: req.params.id});
+    res.status = 200;
+    res.json({id: req.params.id});
+  } catch (err) {
+    console.log('DELETE error at deleteRobot'); //eslint-disable-line no-console
+    res.status(500).send({ error: 'Server error. Delete Robot end-point.' });
+  }
 };
