@@ -5,7 +5,6 @@ exports.getRobots = async (req, res) => {
   try {
     const robots = await Robot.find();
     res.status = 200;
-    console.log('robots ', robots)
     res.json(robots);
   }
   catch (err) {
@@ -86,9 +85,7 @@ exports.findOneRobot = async (req, res) => {
 // method to find the top 10 robots
 exports.findTop10 = async (req, res) => {
   try {
-    console.log('*********')
     const robots = await Robot.find();
-    console.log('robots ', robots)
     res.status = 200;
     res.json(robots);
   } catch (err) {
