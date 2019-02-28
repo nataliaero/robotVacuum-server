@@ -12,7 +12,7 @@ router.put('/robots/:id', controller.updateRobot);
 router.delete('/robots/:id', controller.deleteRobot);
 
 router.get('*', (req, res, next) => {
-  const err = new Error('Page Not Found');
+  const err = new Error('Page Not Found: '+ req.url);
   err.code = 404;
   next(err);
 });

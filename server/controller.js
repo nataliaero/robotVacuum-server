@@ -9,7 +9,8 @@ exports.getRobots = async (req, res) => {
   }
   catch (err) {
     console.log('GET error at getAll: ', err); //eslint-disable-line no-console
-    res.status(500).send({ error: 'Server error' });
+    if (err.name==='MongoNetworkError') res.status(408).send({ error: 'Mongoose Network Error' });
+    else res.status(500).send({ error: 'Server error' });
   }
 };
 
@@ -78,7 +79,11 @@ exports.findOneRobot = async (req, res) => {
     res.json(robot);
   } catch (err) {
     console.log('GET error at findOneRobot: ', err); //eslint-disable-line no-console
-    res.status(500).send({ error: 'Server error at findOneRobot end-point' });
+    if (err.name==='MongoNetworkError') {
+      res.status(408).send({ error: 'Mongoose Network Error' });
+    } else {
+      res.status(500).send({ error: 'Server error at findOneRobot end-point' });
+    }
   }
 };
 
