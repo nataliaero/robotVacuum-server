@@ -6,8 +6,10 @@ const passport = require('passport');
 const authenticate = require('../authenticate');
 
 router.get('/', authenticate.verifyUser, authenticate.verifyAdmin, userController.getUsers);
-router.post('/login', passport.authenticate('local'), userController.login);
+router.post('/login', userController.login);
 router.post('/register', userController.register);
+router.get('/checkJWTToken', userController.checkJWTToken);
+router.get('/logout', userController.logout);
 
 router.get('*', (req, res, next) => {
   const err = new Error('Page Not Found: '+ req.url);
