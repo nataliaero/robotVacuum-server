@@ -1,4 +1,4 @@
-const Robot = require('./models/robot');
+const Robot = require('../models/robot');
 
 // method to get all robot vacuums
 exports.getRobots = async (req, res) => {

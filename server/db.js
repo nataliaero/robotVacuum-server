@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
+const config = require('./config');
 
-mongoose.connect('mongodb://localhost:27017/robotVacuumDb', {useNewUrlParser: true});
+mongoose.connect(config.mongoUrl, {useNewUrlParser: true});
 
 module.exports = mongoose;
