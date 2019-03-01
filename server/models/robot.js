@@ -53,6 +53,21 @@ const RobotDataSchema = new Schema ({
   timestamp: true
 });
 
+const commentSchema = new Schema({
+  comment: {
+    type: String,
+    required: true
+  },
+  author: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  },
+  date: {
+    type: Number,
+    required: true
+  }
+});
+
 const RobotSchema = new Schema ({
   name: {
     type: String,
@@ -61,6 +76,10 @@ const RobotSchema = new Schema ({
   top10: {
     type: Boolean,
     default: false
+  },
+  likes: {
+    type: Boolean,
+    default: 0
   },
   subtitle: {
     type: String,
@@ -126,7 +145,8 @@ const RobotSchema = new Schema ({
     type: String,
     required: true
   },
-  tableProps: RobotDataSchema
+  tableProps: RobotDataSchema,
+  comments: [commentSchema]
 },{
   timestamp: true
 });

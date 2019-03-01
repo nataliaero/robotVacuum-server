@@ -33,13 +33,16 @@ exports.login = async (req, res) => {
         if (err) {
           res.status = 401; //unauthorised
           res.json({success: false, status: 'Login Unsuccessful!', err: 'Could not log in.'});
+        } else {
+          const token = authenticate.getToken({_id: req.user._id});
+          res.status = 200;
+          res.json({success: true, token: token, status: 'Login Successful!'});
+
         }
       });
     }
 
-    const token = authenticate.getToken({_id: req.user._id});
-    res.status = 200;
-    res.json({success: true, token: token, status: 'Login Successful!'});
+
 
   })(req, res);
 

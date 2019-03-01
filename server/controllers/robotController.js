@@ -3,7 +3,7 @@ const Robot = require('../models/robot');
 // method to get all robot vacuums
 exports.getRobots = async (req, res) => {
   try {
-    const robots = await Robot.find();
+    const robots = await Robot.find().populate('comments.author');
     res.status = 200;
     res.json(robots);
   }
@@ -17,7 +17,7 @@ exports.getRobots = async (req, res) => {
 // method to search for a robot vaccum based on the name
 exports.searchRobots = async (req, res) => {
   try {
-    const allRobots = await Robot.find();
+    const allRobots = await Robot.find().populate('comments.author');
     const selectedRobots = allRobots.filter(robot => {
       const name = robot.name.toLowerCase();
       return name.includes(req.params.searchVal.toLowerCase());
@@ -74,9 +74,13 @@ exports.deleteRobot = async (req, res) => {
 // method to find one robot based on one id
 exports.findOneRobot = async (req, res) => {
   try {
-    const robot = await Robot.findById(req.params.id);
-    res.status = 200;
-    res.json(robot);
+    const robot = await Robot.findById(req.params.id).populate('comments.author');
+    if (robot) {
+      res.status = 200;
+      res.json(robot);
+    } else {
+      res.status(404).send({ error: 'Robot not found!' });
+    }
   } catch (err) {
     console.log('GET error at findOneRobot: ', err); //eslint-disable-line no-console
     if (err.name==='MongoNetworkError') {
@@ -84,6 +88,86 @@ exports.findOneRobot = async (req, res) => {
     } else {
       res.status(500).send({ error: 'Server error at findOneRobot end-point' });
     }
+  }
+};
+
+// get comments for each robot
+exports.getComments = async (req, res) => {
+  try {
+    const robot = await Robot.findById(req.params.id).populate('comments.author');
+    if (robot) {
+      res.status = 200;
+      res.json(robot.comments);
+    } else {
+      res.status(404).send({ error: 'Robot not found!' });
+    }
+  } catch (err) {
+    console.log('GET error at getComments: ', err); //eslint-disable-line no-console
+    if (err.name==='MongoNetworkError') {
+      res.status(408).send({ error: 'Mongoose Network Error' });
+    } else {
+      res.status(500).send({ error: 'Server error at getComments end-point' });
+    }
+  }
+};
+
+//post a comment
+exports.postComment = async (req, res) => {
+  try {
+    const robot = await Robot.findById(req.params.id).populate('comments.author');
+    if (robot) {
+      req.body.author = req.user._id;
+      req.body.date = Date.now();
+      robot.comments.push(req.body);
+      robot.save()
+        .then((robot) => {
+          Robot.findById(robot._id)
+            .populate('comments.author')
+            .then((robot) => {
+              res.statusCode = 200;
+              res.json(robot);
+            });
+        });
+
+    } else {
+      res.status(404).send({ error: 'Robot not found!' });
+    }
+  } catch (err) {
+    console.log('GET error at postComment: ', err); //eslint-disable-line no-console
+    if (err.name==='MongoNetworkError') {
+      res.status(408).send({ error: 'Mongoose Network Error' });
+    } else {
+      res.status(500).send({ error: 'Server error at postComment end-point' });
+    }
+  }
+
+};
+
+//delete a comment
+exports.deleteComment = async (req, res) => {
+  try {
+    const robot = await Robot.findById(req.params.id).populate('comments.author');
+    if (robot) {
+      if (robot.comments.id(req.params.idComment)) {
+        robot.comments.id(req.params.idComment).remove();
+        robot.save()
+          .then((robot) => {
+            Robot.findById(robot._id)
+              .populate('comments.author')
+              .then((robot) => {
+                res.statusCode = 200;
+                res.json(robot);
+              });
+          });
+      } else res.status(404).send({ error: 'Comment not found!' });
+    } else res.status(404).send({ error: 'Robot not found!' });
+
+  } catch (err) {
+    console.log('GET error at deleteComment: ', err); //eslint-disable-line no-console
+    if (err.name==='MongoNetworkError') {
+      res.status(408).send({ error: 'Mongoose Network Error' });
+    }
+    else res.status(500).send({ error: 'Server error at postComment end-point' });
   }
 };
 
