@@ -53,25 +53,6 @@ const RobotDataSchema = new Schema ({
   timestamp: true
 });
 
-const commentSchema = new Schema({
-  comment: {
-    type: String,
-    required: true
-  },
-  author: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User'
-  },
-  name: {
-    type: String,
-    required: true
-  },
-  date: {
-    type: Number,
-    required: true
-  }
-});
-
 const RobotSchema = new Schema ({
   name: {
     type: String,
@@ -150,7 +131,10 @@ const RobotSchema = new Schema ({
     required: true
   },
   tableProps: RobotDataSchema,
-  comments: [commentSchema]
+  comments: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Comment'
+  }]
 },{
   timestamp: true
 });

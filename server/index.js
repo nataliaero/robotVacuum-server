@@ -6,6 +6,7 @@ const path = require('path');
 const passport = require('passport');
 const usersRouter = require('./routes/users');
 const robotRouter = require('./routes/robots');
+const commentRouter = require('./routes/comments');
 
 const http = require('http');
 const https = require('https');
@@ -45,6 +46,7 @@ app.use(passport.initialize());
 app.use('/images', express.static(path.join(__dirname, 'images')));
 app.use('/users', usersRouter);
 app.use('/robots', robotRouter);
+app.use('/comments', commentRouter);
 
 // http server
 const server = http.createServer(app);

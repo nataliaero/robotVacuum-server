@@ -1,9 +1,11 @@
 const Robot = require('../models/robot');
+const Comment = require('../models/comments');
 
 // method to get all robot vacuums
 exports.getRobots = async (req, res) => {
   try {
-    const robots = await Robot.find().populate('comments.author');
+    const robots = await Robot.find()
+      .populate({path: 'comments', model: 'Comment', populate: {path: 'author', model: 'User'}});
     res.status = 200;
     res.json(robots);
   }
@@ -17,7 +19,9 @@ exports.getRobots = async (req, res) => {
 // method to search for a robot vaccum based on the name
 exports.searchRobots = async (req, res) => {
   try {
-    const allRobots = await Robot.find().populate('comments.author');
+    const allRobots = await Robot.find()
+      .populate({path: 'comments', model: 'Comment', populate: {path: 'author', model: 'User'}});
+
     const selectedRobots = allRobots.filter(robot => {
       const name = robot.name.toLowerCase();
       return name.includes(req.params.searchVal.toLowerCase());
@@ -74,7 +78,9 @@ exports.deleteRobot = async (req, res) => {
 // method to find one robot based on one id
 exports.findOneRobot = async (req, res) => {
   try {
-    const robot = await Robot.findById(req.params.id).populate('comments.author');
+    const robot = await Robot.findById(req.params.id)
+      .populate({path: 'comments', model: 'Comment', populate: {path: 'author', model: 'User'}});
+
     if (robot) {
       res.status = 200;
       res.json(robot);
@@ -94,7 +100,9 @@ exports.findOneRobot = async (req, res) => {
 // get comments for each robot
 exports.getComments = async (req, res) => {
   try {
-    const robot = await Robot.findById(req.params.id).populate('comments.author');
+    const robot = await Robot.findById(req.params.id)
+      .populate({path: 'comments', model: 'Comment', populate: {path: 'author', model: 'User'}});
+
     if (robot) {
       res.status = 200;
       res.json(robot.comments);
@@ -114,17 +122,20 @@ exports.getComments = async (req, res) => {
 //post a comment
 exports.postComment = async (req, res) => {
   try {
-    const robot = await Robot.findById(req.params.id).populate('comments.author');
+    const robot = await Robot.findById(req.params.id);
     if (robot) {
+
       if (req.user) req.body.author = req.user._id;
       else req.body.author = '5c7a9374e3214e41d593c3fb'; //anonymous id
       req.body.date = Date.now();
+      let newComment = new Comment(req.body);
 
-      robot.comments.push(req.body);
-      robot.save()
+      robot.comments.push(newComment._id);
+      await newComment.save();
+      await robot.save()
         .then((robot) => {
           Robot.findById(robot._id)
-            .populate('comments.author')
+            .populate({path: 'comments', model: 'Comment', populate: {path: 'author', model: 'User'}})
             .then((robot) => {
               res.statusCode = 200;
               res.json(robot);
@@ -143,34 +154,6 @@ exports.postComment = async (req, res) => {
     }
   }
 
-};
-
-//delete a comment
-exports.deleteComment = async (req, res) => {
-  try {
-    const robot = await Robot.findById(req.params.id).populate('comments.author');
-    if (robot) {
-      if (robot.comments.id(req.params.idComment)) {
-        robot.comments.id(req.params.idComment).remove();
-        robot.save()
-          .then((robot) => {
-            Robot.findById(robot._id)
-              .populate('comments.author')
-              .then((robot) => {
-                res.statusCode = 200;
-                res.json(robot);
-              });
-          });
-      } else res.status(404).send({ error: 'Comment not found!' });
-    } else res.status(404).send({ error: 'Robot not found!' });
-
-  } catch (err) {
-    console.log('GET error at deleteComment: ', err); //eslint-disable-line no-console
-    if (err.name==='MongoNetworkError') {
-      res.status(408).send({ error: 'Mongoose Network Error' });
-    }
-    else res.status(500).send({ error: 'Server error at postComment end-point' });
-  }
 };
 
 // method to find the top 10 robots

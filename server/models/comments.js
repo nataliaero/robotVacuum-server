@@ -8,6 +8,10 @@ const commentSchema = new Schema({
     required: true
   },
   author: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  },
+  name: {
     type: String,
     required: true
   },
@@ -15,12 +19,12 @@ const commentSchema = new Schema({
     type: Number,
     required: true
   },
-  comments: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Comment'
-    }
-  ]
+  // comments: [
+  //   {
+  //     type: mongoose.Schema.Types.ObjectId,
+  //     ref: 'Comment'
+  //   }
+  // ]
 });
 
 const Comment = mongoose.model('Comment', commentSchema);
