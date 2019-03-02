@@ -127,7 +127,8 @@ exports.postComment = async (req, res) => {
 
       if (req.user) req.body.author = req.user._id;
       else req.body.author = '5c7a9374e3214e41d593c3fb'; //anonymous id
-      req.body.date = Date.now();
+      dateNew = new Date(Date.now());
+      req.body.date = dateNew.toLocaleString();
       let newComment = new Comment(req.body);
 
       robot.comments.push(newComment._id);
