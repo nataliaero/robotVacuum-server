@@ -116,8 +116,10 @@ exports.postComment = async (req, res) => {
   try {
     const robot = await Robot.findById(req.params.id).populate('comments.author');
     if (robot) {
-      req.body.author = req.user._id;
+      if (req.user) req.body.author = req.user._id;
+      else req.body.author = '5c7a9374e3214e41d593c3fb'; //anonymous id
       req.body.date = Date.now();
+
       robot.comments.push(req.body);
       robot.save()
         .then((robot) => {
@@ -133,7 +135,7 @@ exports.postComment = async (req, res) => {
       res.status(404).send({ error: 'Robot not found!' });
     }
   } catch (err) {
-    console.log('GET error at postComment: ', err); //eslint-disable-line no-console
+    console.log('POST error at postComment: ', err); //eslint-disable-line no-console
     if (err.name==='MongoNetworkError') {
       res.status(408).send({ error: 'Mongoose Network Error' });
     } else {

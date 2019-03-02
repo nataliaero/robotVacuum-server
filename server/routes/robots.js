@@ -10,7 +10,7 @@ router.get('/robot/:id', robotController.findOneRobot);
 router.get('/top10', robotController.findTop10);
 
 router.get('/robot/:id/comments', robotController.getComments);
-router.post('/robot/:id/comments', authenticate.verifyUser, robotController.postComment);
+router.post('/robot/:id/comments', robotController.postComment);
 router.delete('/robot/:id/comments/:idComment', authenticate.verifyUser, authenticate.verifyAdmin, robotController.deleteComment);
 
 router.post('/', authenticate.verifyUser, authenticate.verifyAdmin, robotController.postRobot);
