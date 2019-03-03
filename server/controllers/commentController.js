@@ -9,7 +9,7 @@ exports.replyComment = async (req, res) => {
 
       if (req.user) req.body.author = req.user._id;
       else {
-        const anonymousUser = await User.find({username: 'Anonimo'});
+        const anonymousUser = await User.find({username: 'Anonymous'});
         if (anonymousUser) req.body.author = anonymousUser._id; //anonymous id
         else res.status(500).send({ error: 'Anonymous not found!' });
       }
@@ -40,8 +40,7 @@ exports.deleteComment = async (req, res) => {
   try {
     const comment = await Comment.findById(req.params.idComment);
     if (comment) {
-
-      if (comment.author.toString() === req.user._id.toString()) {
+      if (comment.author.toString() === req.user._id.toString() || req.user.admin) {
         const comments = await Comment.find({});
         let commentAux;
         comments.forEach(subComment => {

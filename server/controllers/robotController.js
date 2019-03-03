@@ -127,8 +127,8 @@ exports.postComment = async (req, res) => {
 
     if (robot) {
 
+      const user = await User.findOne({username: req.body.name});
 
-      const user = User.find({username: req.body.name});
       if (user) {
         req.body.author = user._id;
       } else {
