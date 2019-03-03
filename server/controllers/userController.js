@@ -65,7 +65,7 @@ exports.register = (req, res) => {
   (err, user) => {
     if (err) {
       console.log('POST error at register: ', err); //eslint-disable-line no-console
-      res.status = 500;
+      res.status = 401;
       res.json({err: err});
     } else {
       passport.authenticate('local')(req, res, () => {
