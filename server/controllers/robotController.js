@@ -102,7 +102,8 @@ exports.findOneRobot = async (req, res) => {
 exports.getComments = async (req, res) => {
   try {
     const robot = await Robot.findById(req.params.id)
-      .populate({path: 'comments', model: 'Comment', populate: {path: 'author', model: 'User'}});
+      .populate({path: 'comments', model: 'Comment',
+        populate: [{path: 'author', model: 'User'}, {path: 'comments', model: 'Comment'}]});
 
     if (robot) {
       res.status = 200;
