@@ -17,7 +17,15 @@ exports.replyComment = async (req, res) => {
       dateNew = new Date(Date.now());
       req.body.date = dateNew.toLocaleString();
       if (!req.body.name) req.body.name = 'anonymous';
-      const reply = new Comment(req.body);
+
+      const newReply = {
+        author: req.body.author,
+        date: req.body.date,
+        name: req.body.name,
+        comment: req.body.comment,
+      };
+
+      const reply = new Comment(newReply);
 
       comment.comments.push(reply._id);
       await comment.save();

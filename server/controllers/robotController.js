@@ -138,7 +138,14 @@ exports.postComment = async (req, res) => {
 
       dateNew = new Date(Date.now());
       req.body.date = dateNew.toLocaleString();
-      let newComment = new Comment(req.body);
+
+      const newReply = {
+        author: req.body.author,
+        date: req.body.date,
+        name: req.body.name,
+        comment: req.body.comment,
+      };
+      let newComment = new Comment(newReply);
 
       robot.comments.push(newComment._id);
 
