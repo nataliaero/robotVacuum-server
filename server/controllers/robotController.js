@@ -1,5 +1,6 @@
 const Robot = require('../models/robot');
 const Comment = require('../models/comments');
+const User = require('../models/user');
 
 // method to get all robot vacuums
 exports.getRobots = async (req, res) => {
@@ -123,15 +124,23 @@ exports.getComments = async (req, res) => {
 exports.postComment = async (req, res) => {
   try {
     const robot = await Robot.findById(req.params.id);
+
     if (robot) {
 
-      if (req.user) req.body.author = req.user._id;
-      else req.body.author = '5c7a9374e3214e41d593c3fb'; //anonymous id
+
+      const user = User.find({username: req.body.name});
+      if (user) {
+        req.body.author = user._id;
+      } else {
+        res.status(404).send({ error: 'User not found!' });
+      }
+
       dateNew = new Date(Date.now());
       req.body.date = dateNew.toLocaleString();
       let newComment = new Comment(req.body);
 
       robot.comments.push(newComment._id);
+
       await newComment.save();
       await robot.save()
         .then((robot) => {

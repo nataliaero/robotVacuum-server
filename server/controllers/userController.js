@@ -1,4 +1,3 @@
-const Robot = require('../models/robot');
 const User = require('../models/user');
 
 const passport = require('passport');
