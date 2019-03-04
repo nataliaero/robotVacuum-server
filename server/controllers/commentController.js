@@ -1,5 +1,6 @@
 const Comment = require('../models/comments');
 const User = require('../models/user');
+const Robot = require('../models/robot');
 
 //method to reply a comment
 exports.replyComment = async (req, res) => {
@@ -64,6 +65,18 @@ exports.deleteComment = async (req, res) => {
           await Comment(commentAux).save();
         }
         await Comment.deleteOne({_id: req.params.idComment});
+        const robot = await Robot.findById(req.params.idRobot);
+        if (robot) {
+          let idxComment = robot.comments.indexOf(req.params.idComment);
+          if (idxComment!==-1) {
+            robot.comments.splice(idxComment, 1);
+            await robot.save();
+          }
+        } else {
+          res.status(404).send({ error: 'Robot not found!' });
+        }
+
+
       } else {
         // res.status(401).send({ error: 'Unauthorized' });
       }

@@ -5,8 +5,9 @@ const User = require('../models/user');
 // method to get all robot vacuums
 exports.getRobots = async (req, res) => {
   try {
-    const robots = await Robot.find()
-      .populate({path: 'comments', model: 'Comment', populate: {path: 'author', model: 'User'}});
+    const robots = await Robot.find({})
+      .populate({path: 'comments', model: 'Comment',
+        populate: [{path: 'author', model: 'User'}, {path: 'comments', model: 'Comment'}]});
     res.status = 200;
     res.json(robots);
   }
