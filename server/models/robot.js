@@ -63,7 +63,7 @@ const RobotSchema = new Schema ({
     default: false
   },
   likes: {
-    type: Boolean,
+    type: Number,
     default: 0
   },
   subtitle: {

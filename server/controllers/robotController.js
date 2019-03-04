@@ -65,10 +65,42 @@ exports.updateRobot = async (req, res) => {
   }
 };
 
+exports.updateLikesRobot = async (req, res) => {
+  try {
+
+    const robot = await Robot.findById(req.params.idRobot);
+    if (robot) {
+
+      let numlikes = robot.likes;
+      if (req.body.liked) numlikes+=1;
+      else numlikes-=1;
+      await Robot.findOneAndUpdate({_id: req.params.idRobot}, {likes: numlikes});
+
+      const user = await User.findById(req.params.idUser);
+      if (user) {
+        user.likes.push(req.params.idRobot);
+        await user.save();
+        res.status = 200;
+        res.json(req.body);
+      } else {
+        res.status(404).send({ error: 'User not found!' });
+      }
+
+    } else {
+      res.status(404).send({ error: 'Robot not found!' });
+    }
+
+  } catch (err) {
+    console.log('UPDATE error at updateLikesRobot: ', err); //eslint-disable-line no-console
+    res.status(400).send({ error: 'Client error. Check request body.' });
+  }
+};
+
 // method to delete a robot vacuum
 exports.deleteRobot = async (req, res) => {
   try {
     await Robot.deleteOne({_id: req.params.id});
+
     res.status = 200;
     res.json({id: req.params.id});
   } catch (err) {

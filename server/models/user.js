@@ -4,6 +4,10 @@ const Schema = mongoose.Schema;
 const passportLocalMongoose = require('passport-local-mongoose');
 
 const UserSchema = new Schema ({
+  likes: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Robot'
+  }],
   firstname: {
     type: String,
     required: true

@@ -33,10 +33,13 @@ app.use(cors());
 //   }
 // });
 
-// redirect all requests to secure
+//redirect all requests to secure
 // app.all('*', (req, res, next) => {
 //   if (req.secure) next();
-//   else res.redirect(307, 'https://' + req.hostname + ':' + app.get('secPort') + req.url);
+//   else {
+//     console.log('NO SECURE')
+//     res.redirect(307, 'https://' + req.hostname + ':' + app.get('secPort') + req.url);
+//   }
 // });
 
 
