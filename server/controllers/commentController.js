@@ -7,11 +7,12 @@ exports.replyComment = async (req, res) => {
     const comment = await Comment.findById(req.params.idComment);
     if (comment) {
 
-      if (req.user) req.body.author = req.user._id;
-      else {
-        const anonymousUser = await User.find({username: 'Anonymous'});
-        if (anonymousUser) req.body.author = anonymousUser._id; //anonymous id
-        else res.status(500).send({ error: 'Anonymous not found!' });
+      const user = await User.findOne({username: req.body.name});
+
+      if (user) {
+        req.body.author = user._id;
+      } else {
+        res.status(404).send({ error: 'User not found!' });
       }
 
       dateNew = new Date(Date.now());
@@ -49,7 +50,6 @@ exports.deleteComment = async (req, res) => {
     const comment = await Comment.findById(req.params.idComment);
     if (comment) {
       if (comment.author.toString() === req.user._id.toString() || req.user.admin) {
-
         const comments = await Comment.find({});
         let commentAux;
         comments.forEach(subComment => {
