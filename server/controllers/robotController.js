@@ -65,12 +65,35 @@ exports.updateRobot = async (req, res) => {
   }
 };
 
+// For a specific robot and user, get like relationship
+exports.getLikeRobot = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.idUser);
+    if (user) {
+      const idxRobot = user.likes.indexOf(req.params.idRobot);
+      if (idxRobot===-1) {
+        res.status = 200;
+        res.json({liked: false});
+      } else {
+        res.status = 200;
+        res.json({liked: true});
+      }
+
+    } else {
+      res.status(404).send({ error: 'User not found!' });
+    }
+  } catch (err) {
+    console.log('UPDATE error at updateLikesRobot: ', err); //eslint-disable-line no-console
+    res.status(400).send({ error: 'Client error. Check request body.' });
+  }
+};
+
 exports.updateLikesRobot = async (req, res) => {
   try {
 
     const robot = await Robot.findById(req.params.idRobot);
-    if (robot) {
 
+    if (robot) {
       let numlikes = robot.likes;
       if (req.body.liked) numlikes+=1;
       else numlikes-=1;
