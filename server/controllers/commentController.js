@@ -49,20 +49,21 @@ exports.deleteComment = async (req, res) => {
     const comment = await Comment.findById(req.params.idComment);
     if (comment) {
       if (comment.author.toString() === req.user._id.toString() || req.user.admin) {
+
         const comments = await Comment.find({});
         let commentAux;
         comments.forEach(subComment => {
           let idxComment = subComment.comments.indexOf(req.params.idComment);
           if (idxComment!==-1) {
-            subComment.comments.splice(idxComment);
+            subComment.comments.splice(idxComment, 1);
             commentAux = subComment;
           }
 
         });
         if (commentAux) {
           await Comment(commentAux).save();
-          await Comment.deleteOne({_id: req.params.idComment});
         }
+        await Comment.deleteOne({_id: req.params.idComment});
       } else {
         // res.status(401).send({ error: 'Unauthorized' });
       }
