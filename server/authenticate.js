@@ -8,15 +8,19 @@ const jwt = require('jsonwebtoken');
 const User = require('./models/user');
 const config = require('./config');
 
+//User.authenticate comes from Mongoose-passport. No need to write authentication func
 exports.local = passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
+// Creates an returns the token
 exports.getToken= function (user) {
   return jwt.sign(user, config.secretKey, {expiresIn: 10800});
 };
 
 const opts = {};
+
+// How to extract the JWT from incoming request
 opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
 opts.secretOrKey = config.secretKey;
 

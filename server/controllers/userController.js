@@ -33,6 +33,8 @@ exports.login = async (req, res) => {
           res.status = 401; //unauthorised
           res.json({success: false, status: 'Login Unsuccessful!', err: 'Could not log in.'});
         } else {
+          // create a token for the authenticated user with local strategy
+          // req.user is present thanks to passport.authenticate('local')
           const token = authenticate.getToken({_id: req.user._id});
           res.status = 200;
           res.json({success: true, token: token, status: 'Login Successful!'});
@@ -56,6 +58,7 @@ exports.logout = (req, res) => {
 
 // method to register users
 exports.register = (req, res) => {
+  // register method from Mongoose
   User.register(new User({
     username: req.body.username,
     firstname: req.body.firstname,
