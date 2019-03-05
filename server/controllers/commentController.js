@@ -48,6 +48,7 @@ exports.replyComment = async (req, res) => {
 // method to delete a comment
 exports.deleteComment = async (req, res) => {
   try {
+    console.log('req ', req)
     const comment = await Comment.findById(req.params.idComment);
     if (comment) {
       if (comment.author.toString() === req.user._id.toString() || req.user.admin) {
