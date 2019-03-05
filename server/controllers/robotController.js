@@ -68,9 +68,9 @@ exports.updateRobot = async (req, res) => {
 // For a specific robot and user, get like relationship
 exports.getLikeRobot = async (req, res) => {
   try {
-    const user = await User.findById(req.params.idUser);
+    const user = await User.find({username: req.params.username});
     if (user) {
-      const idxRobot = user.likes.indexOf(req.params.idRobot);
+      const idxRobot = user[0].likes.indexOf(req.params.idRobot);
       if (idxRobot===-1) {
         res.status = 200;
         res.json({liked: false});
@@ -90,19 +90,21 @@ exports.getLikeRobot = async (req, res) => {
 
 exports.updateLikesRobot = async (req, res) => {
   try {
-
-    const robot = await Robot.findById(req.params.idRobot);
-
+    const robot = await Robot.find({_id: req.params.idRobot});
     if (robot) {
-      let numlikes = robot.likes;
+      let numlikes = robot[0].likes;
       if (req.body.liked) numlikes+=1;
       else numlikes-=1;
       await Robot.findOneAndUpdate({_id: req.params.idRobot}, {likes: numlikes});
 
-      const user = await User.findById(req.params.idUser);
+      const user = await User.find({username: req.params.username});
       if (user) {
-        user.likes.push(req.params.idRobot);
-        await user.save();
+        if (req.body.liked) user[0].likes.push(req.params.idRobot);
+        else {
+          const idxLiked = user[0].likes.indexOf(req.params.idRobot);
+          user[0].likes.splice(idxLiked, 1);
+        }
+        await user[0].save();
         res.status = 200;
         res.json(req.body);
       } else {
