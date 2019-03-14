@@ -12,5 +12,5 @@ Robot Vacuum is an Angular niche webpage that describes the most popular robot v
 
    
 
-<img src="/Users/natalia/development/CODEWORKS/0-RobotVacuumClient/client/src/assets/images/logoCatGrey.png" style="zoom:20%" />
+<img src="logoCatGrey.png" style="zoom:20%" />
 
