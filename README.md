@@ -11,6 +11,6 @@ Robot Vacuum is an Angular niche webpage that describes the most popular robot v
 4. Create a **.env** file at the root of your project, and add a new *SECRET_KEY* variable.
 
 
-![logoCat](logoCatGrey.png = 250x)
+![logoCat](./logoCatGrey.png = 250x)
 
 
